@@ -1,0 +1,4 @@
+worlddb.db-shm
+worlddb.db-wal
+nohup.out
+logs.log
