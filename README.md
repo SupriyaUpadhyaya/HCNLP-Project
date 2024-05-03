@@ -1,1 +1,1 @@
-# HCNLP-Text2Sql-Project
+# HCNLP-NL2SQL-Project
