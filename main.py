@@ -14,8 +14,7 @@ load_in_4bit = True # Use 4bit quantization to reduce memory usage. Can be False
 
 # Set a default model
 @st.cache_resource
-if "model_name" not in st.session_state:
-    st.session_state["model_name"] = "basavaraj/text2sql-Llama3-8b"
+def load_model():
     model = LlamaForCausalLM.from_pretrained(
     "basavaraj/text2sql-Llama3-8b",
     load_in_4bit=True,
@@ -25,6 +24,8 @@ if "model_name" not in st.session_state:
     st.session_state["model"] = model
     st.session_state["tokenizer"] = tokenizer
 
+if "model_name" not in st.session_state:
+    st.session_state["model_name"] = "basavaraj/text2sql-Llama3-8b"
 
 # Initialize chat history
 if 'messages' not in st.session_state:
@@ -36,6 +37,8 @@ print("st.session_state.messages :", st.session_state.messages)
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
+
+load_model()
 
 # Accept user input
 if prompt := st.chat_input("What is up?"):
