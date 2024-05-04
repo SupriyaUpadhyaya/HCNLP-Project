@@ -20,7 +20,7 @@ if "model_name" not in st.session_state:
     load_in_4bit=True,
     torch_dtype=torch.float16)
     #FastLanguageModel.for_inference(model)
-    tokenizer = AutoTokenizer.from_pretrained(model)
+    tokenizer = AutoTokenizer.from_pretrained("basavaraj/text2sql-Llama3-8b")
     st.session_state["model"] = model
     st.session_state["tokenizer"] = tokenizer
 
