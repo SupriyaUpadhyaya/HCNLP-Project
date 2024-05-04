@@ -11,9 +11,9 @@ load_in_4bit = True # Use 4bit quantization to reduce memory usage. Can be False
 
 # Set a default model
 if "model_name" not in st.session_state:
-    st.session_state["model_name"] = "supriyaupadhyaya/llama-3-8b-bnb-4bit-text-to-sql"
+    st.session_state["model_name"] = "basavaraj/text2sql-Llama3-8b"
     model, tokenizer = FastLanguageModel.from_pretrained(
-    model_name = "supriyaupadhyaya/llama-3-8b-bnb-4bit-text-to-sql",
+    model_name = "basavaraj/text2sql-Llama3-8b",
     max_seq_length = max_seq_length,
     dtype = dtype,
     load_in_4bit = load_in_4bit)
