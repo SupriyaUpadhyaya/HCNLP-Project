@@ -151,13 +151,10 @@ class Refiner():
 def invoke_chain(question,messages,tokenizer,model):
     print("question : ", question)
     history = create_history(messages)
-    msg = history.messages
-    if len(msg) > 4:
-        while len(msg) > 4:
-            msg.pop()
-            msg.pop()
+    history = history.pop()
+    history = history[:-4]
     text2sql_tmpl_str = _generate_prompt_sql(
-        question, context, dialect="sqlite", output="", messages=msg
+        question, context, dialect="sqlite", output="", messages=history
     )
     #print("text2sql_tmpl_str : ", text2sql_tmpl_str)
     inputs = tokenizer(text2sql_tmpl_str, return_tensors = "pt").to("cuda")
