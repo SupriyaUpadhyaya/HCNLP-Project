@@ -150,9 +150,9 @@ class Refiner():
 
 def invoke_chain(question,messages,tokenizer,model):
     print("question : ", question)
+    messages = messages.pop()
+    messages = messages[:-4]
     history = create_history(messages)
-    history = history.pop()
-    history = history[:-4]
     text2sql_tmpl_str = _generate_prompt_sql(
         question, context, dialect="sqlite", output="", messages=history
     )
