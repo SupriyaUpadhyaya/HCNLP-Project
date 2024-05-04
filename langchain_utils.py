@@ -47,10 +47,6 @@ You must output the SQL query that answers the question. Use the previous conver
 ### Context:
 {context}
 
-### Previous Conversation:
-{messages}
-
-### Response:
 """
     if output:
         return text_to_sql_tmpl_str.format(

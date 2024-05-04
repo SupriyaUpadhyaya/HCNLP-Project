@@ -13,6 +13,7 @@ dtype = None # None for auto detection. Float16 for Tesla T4, V100, Bfloat16 for
 load_in_4bit = True # Use 4bit quantization to reduce memory usage. Can be False.
 
 # Set a default model
+@st.cache_resource
 if "model_name" not in st.session_state:
     st.session_state["model_name"] = "basavaraj/text2sql-Llama3-8b"
     model = LlamaForCausalLM.from_pretrained(
