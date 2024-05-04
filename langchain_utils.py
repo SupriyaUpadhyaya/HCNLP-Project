@@ -159,7 +159,7 @@ def invoke_chain(question,messages,tokenizer,model):
     text2sql_tmpl_str = _generate_prompt_sql(
         question, context, dialect="sqlite", output="", messages=msg
     )
-    print("text2sql_tmpl_str : ", text2sql_tmpl_str)
+    #print("text2sql_tmpl_str : ", text2sql_tmpl_str)
     inputs = tokenizer(text2sql_tmpl_str, return_tensors = "pt").to("cuda")
 
     outputs = model.generate(**inputs, max_new_tokens = 64, use_cache = True)
@@ -174,11 +174,15 @@ def invoke_chain(question,messages,tokenizer,model):
     query_generated = query
     exec_result = refiner._execute_sql(sql=query_generated, question=question)
     print("exec_result : ", exec_result)
+    is_refined = False
+    refined_generations = []
     while count <= 5:
         is_refine_required = refiner._is_need_refine(exec_result=exec_result)
         print("is_refine_required :", is_refine_required)
         if is_refine_required:
+            is_refined = True
             query_generated = refiner._refine(query=query_generated, evidence=exec_result, schema_info=db.table_info, fk_info="", error_info=exec_result)
+            refined_generations.append(query_generated)
             exec_result = refiner._execute_sql(sql=query_generated, question=question)
             print("exec_result :", exec_result)
             count += 1
@@ -205,6 +209,16 @@ def invoke_chain(question,messages,tokenizer,model):
     else:
       answer = "Sorry, could not retrive the answer. Please rephrase your question more accurately."
     
+    with open("app_logs.log", "a") as logfile:
+            logfile.write(f"User Question: {question}\n")
+            logfile.write(f"Generated SQL Query: {exec_result['sql']}\n")
+            if 'data' in exec_result:
+                logfile.write(f"SQL Result: {exec_result['data']}\n")
+            logfile.write(f"Answer: {answer}\n\n")
+            logfile.write(f"User Question: {question}\n")
+            logfile.write(f"Prompt: {text2sql_tmpl_str}\n")
+            logfile.write(f"Is refined: {is_refined}\n")
+            logfile.write(f"Refined queries: {refined_generations}\n")
     return answer
 
 
