@@ -142,7 +142,7 @@ class Refiner():
         return query
 
 def invoke_chain(question,messages,tokenizer,model):
-    print("question : ", question)
+    #print("question : ", question)
     messages = st.session_state.history.messages
     text2sql_tmpl_str = _generate_prompt_sql(
         question, context, dialect="sqlite", output="", messages=messages
@@ -156,23 +156,23 @@ def invoke_chain(question,messages,tokenizer,model):
       outputs[:, input_length:], skip_special_tokens=True
     )
     query = response[0]
-    print("Generated query : ", query)
+    #print("Generated query : ", query)
     count = 0
     refiner = Refiner(data_path="/content/drive/MyDrive/HCNLP-Text2Sql-Project/worlddb.db", dataset_name='worlddb', tokenizer=tokenizer, model=model)
     query_generated = query
     exec_result = refiner._execute_sql(sql=query_generated, question=question)
-    print("exec_result : ", exec_result)
+    #print("exec_result : ", exec_result)
     is_refined = False
     refined_generations = []
     while count <= 5:
         is_refine_required = refiner._is_need_refine(exec_result=exec_result)
-        print("is_refine_required :", is_refine_required)
+        #print("is_refine_required :", is_refine_required)
         if is_refine_required:
             is_refined = True
             query_generated = refiner._refine(query=query_generated, evidence=exec_result, schema_info=db.table_info, fk_info="", error_info=exec_result)
             refined_generations.append(query_generated)
             exec_result = refiner._execute_sql(sql=query_generated, question=question)
-            print("exec_result :", exec_result)
+            #print("exec_result :", exec_result)
             count += 1
         else:
             count = 6
