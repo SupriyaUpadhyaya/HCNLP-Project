@@ -22,9 +22,15 @@ text_to_sql_inference_tmpl_str = """\
 db = SQLDatabase.from_uri("sqlite:////content/drive/MyDrive/HCNLP-Text2Sql-Project/worlddb.db", sample_rows_in_table_info=2)
 context = db.table_info
 
-history = ChatMessageHistory()
-
 @st.cache_resource
+def create_history(messages):
+    history = ChatMessageHistory()
+    for message in messages:
+        if message["role"] == "user":
+            history.add_user_message(message["content"])
+        else:
+            history.add_ai_message(message["content"])
+    return history
 
 def _generate_prompt_sql(input, context, dialect="sqlite", output="", messages=""):
     system_message = f"""You are a powerful text-to-SQL model. Your job is to answer questions about a database. You are given a question and context regarding one or more tables.
@@ -144,9 +150,14 @@ class Refiner():
 
 def invoke_chain(question,messages,tokenizer,model):
     print("question : ", question)
-    messages = history.messages
+    history = create_history(messages)
+    msg = history.messages
+    if len(msg) > 4:
+        while len(msg) > 4:
+            msg.pop()
+            msg.pop()
     text2sql_tmpl_str = _generate_prompt_sql(
-        question, context, dialect="sqlite", output="", messages=messages
+        question, context, dialect="sqlite", output="", messages=msg
     )
     #print("text2sql_tmpl_str : ", text2sql_tmpl_str)
     inputs = tokenizer(text2sql_tmpl_str, return_tensors = "pt").to("cuda")
@@ -195,13 +206,10 @@ def invoke_chain(question,messages,tokenizer,model):
         print("Answer :", response)
         history.add_user_message(question)
         history.add_ai_message(exec_result['sql'])
-        if len(messages) > 4:
-            messages.pop()
-            messages.pop()
     else:
       answer = "Sorry, could not retrive the answer. Please rephrase your question more accurately."
     
-    with open("app_logs.log", "a") as logfile:
+    with open("logs.log", "a") as logfile:
             logfile.write(f"User Question: {question}\n")
             logfile.write(f"Generated SQL Query: {exec_result['sql']}\n")
             if 'data' in exec_result:
