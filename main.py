@@ -5,6 +5,7 @@ st.title("Langchain NL2SQL Chatbot")
 
 from unsloth import FastLanguageModel
 from transformers import LlamaTokenizer, LlamaForCausalLM, AutoTokenizer
+import torch
 
 
 max_seq_length = 2048 # Choose any! We auto support RoPE Scaling internally!
