@@ -194,7 +194,7 @@ def invoke_chain(question,messages,tokenizer,model):
         print("Answer :", response)
         st.session_state.history.add_user_message(question)
         st.session_state.history.add_ai_message(exec_result['sql'])
-        if len(st.session_state.history.messages) > 4:
+        if len(st.session_state.history.messages) > 10:
             st.session_state.history.messages.pop()
             st.session_state.history.messages.pop()
     else:
@@ -210,7 +210,7 @@ def invoke_chain(question,messages,tokenizer,model):
             logfile.write(f"Previous conversation : {messages}\n")
             logfile.write(f"Is refined: {is_refined}\n")
             logfile.write(f"Refined queries: {refined_generations}\n")
-            logfile.write(f"===========================================================")
+            logfile.write(f"===========================================================\n")
     return answer
 
 
