@@ -205,7 +205,7 @@ def invoke_chain(question,messages,tokenizer,model):
     else:
       answer = "Sorry, could not retrive the answer. Please rephrase your question more accurately."
     
-    with open("logs.log", "a") as logfile:
+    with open("logs.log", "a", buffering=1) as logfile:
             logfile.write(f"User Question: {question}\n")
             logfile.write(f"Generated SQL Query: {exec_result['sql']}\n")
             if 'data' in exec_result:
