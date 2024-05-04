@@ -9,8 +9,8 @@ from langchain_community.tools.sql_database.tool import QuerySQLDataBaseTool
 from langchain_community.utilities.sql_database import SQLDatabase
 from core.const import refiner_template
 from core.utils import parse_json, parse_sql_from_string, add_prefix, load_json_file, extract_world_info, is_email, is_valid_date_column
-import sqlite3
 
+import sqlite3
 import streamlit as st
 
 text_to_sql_tmpl_str = """\
