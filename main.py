@@ -16,7 +16,7 @@ load_in_4bit = True # Use 4bit quantization to reduce memory usage. Can be False
 if "model_name" not in st.session_state:
     st.session_state["model_name"] = "basavaraj/text2sql-Llama3-8b"
     model = LlamaForCausalLM.from_pretrained(
-    model = "basavaraj/text2sql-Llama3-8b",
+    "basavaraj/text2sql-Llama3-8b",
     load_in_4bit=True,
     torch_dtype=torch.float16)
     #FastLanguageModel.for_inference(model)
