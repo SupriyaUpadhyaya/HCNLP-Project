@@ -19,7 +19,7 @@ text_to_sql_tmpl_str = """\
 text_to_sql_inference_tmpl_str = """\
 ### Instruction:\n{system_message}{user_message}\n\n### Response:\n"""
 
-db = SQLDatabase.from_uri("sqlite:///./worlddb.db", sample_rows_in_table_info=2)
+db = SQLDatabase.from_uri("sqlite:////content/drive/MyDrive/HCNLP-Text2Sql-Project/worlddb.db", sample_rows_in_table_info=2)
 context = db.table_info
 
 @st.cache_resource
@@ -170,7 +170,7 @@ def invoke_chain(question,messages,tokenizer,model):
     query = response[0]
     print("Generated query : ", query)
     count = 0
-    refiner = Refiner(data_path="/content/drive/MyDrive/HCNLP-NL2SQL-Project/worlddb.db", dataset_name='worlddb', tokenizer=tokenizer, model=model)
+    refiner = Refiner(data_path="/content/drive/MyDrive/HCNLP-Text2Sql-Project/worlddb.db", dataset_name='worlddb', tokenizer=tokenizer, model=model)
     query_generated = query
     exec_result = refiner._execute_sql(sql=query_generated, question=question)
     print("exec_result : ", exec_result)
