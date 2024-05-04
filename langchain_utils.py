@@ -204,7 +204,7 @@ def invoke_chain(question,messages,tokenizer,model):
             logfile.write(f"User Question: {question}\n")
             logfile.write(f"Generated SQL Query: {exec_result['sql']}\n")
             if 'data' in exec_result:
-            logfile.write(f"SQL Result: {exec_result['data']}\n")
+                logfile.write(f"SQL Result: {exec_result['data']}\n")
             logfile.write(f"Answer: {answer}\n")
             logfile.write(f"Previous conversation : {messages}\n")
             logfile.write(f"Is refined: {is_refined}\n")
