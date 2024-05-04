@@ -152,6 +152,8 @@ def invoke_chain(question,messages,tokenizer,model):
     print("question : ", question)
     history = create_history(messages)
     msg = history.messages
+    msg = msg.pop()
+    msg = msg[-4:]
     if len(msg) > 4:
         while len(msg) > 4:
             msg.pop()
