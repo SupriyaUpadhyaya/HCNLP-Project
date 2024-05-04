@@ -4,7 +4,7 @@ from langchain_utils import invoke_chain
 st.title("Langchain NL2SQL Chatbot")
 
 from unsloth import FastLanguageModel
-from transformers import LlamaTokenizer, LlamaForCausalLM, AutoTokenizer, TextStreamer
+from transformers import LlamaTokenizer, LlamaForCausalLM, AutoTokenizer, TextIteratorStreamer
 import torch
 
 
@@ -16,7 +16,7 @@ load_in_4bit = True # Use 4bit quantization to reduce memory usage. Can be False
 @st.cache_resource
 def load_model():
     tokenizer = AutoTokenizer.from_pretrained("basavaraj/text2sql-Llama3-8b")
-    text_streamer = TextStreamer(tokenizer)
+    text_streamer = TextIteratorStreamer(tokenizer=tokenizer, skip_prompt=True)
     model = LlamaForCausalLM.from_pretrained(
     "basavaraj/text2sql-Llama3-8b",
     load_in_4bit=True,
