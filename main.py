@@ -4,6 +4,8 @@ from langchain_utils import invoke_chain
 st.title("Langchain NL2SQL Chatbot")
 
 from unsloth import FastLanguageModel
+from transformers import LlamaTokenizer, LlamaForCausalLM, AutoTokenizer
+
 
 max_seq_length = 2048 # Choose any! We auto support RoPE Scaling internally!
 dtype = None # None for auto detection. Float16 for Tesla T4, V100, Bfloat16 for Ampere+
@@ -12,12 +14,12 @@ load_in_4bit = True # Use 4bit quantization to reduce memory usage. Can be False
 # Set a default model
 if "model_name" not in st.session_state:
     st.session_state["model_name"] = "basavaraj/text2sql-Llama3-8b"
-    model, tokenizer = FastLanguageModel.from_pretrained(
-    model_name = "basavaraj/text2sql-Llama3-8b",
-    max_seq_length = max_seq_length,
-    dtype = dtype,
-    load_in_4bit = load_in_4bit)
-    FastLanguageModel.for_inference(model)
+    model = LlamaForCausalLM.from_pretrained(
+    model = "basavaraj/text2sql-Llama3-8b",
+    load_in_4bit=True,
+    torch_dtype=torch.float16)
+    #FastLanguageModel.for_inference(model)
+    tokenizer = AutoTokenizer.from_pretrained(model)
     st.session_state["model"] = model
     st.session_state["tokenizer"] = tokenizer
 
