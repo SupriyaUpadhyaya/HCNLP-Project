@@ -51,6 +51,6 @@ if prompt := st.chat_input("What is up?"):
     # Display assistant response in chat message container
     with st.spinner("Generating response..."):
         with st.chat_message("assistant"):
-            response = invoke_chain(prompt,st.session_state.messages, st.session_state.tokenizer, st.session_state.model)
+            response = invoke_chain(prompt,st.session_state.messages)
             st.markdown(response)
     st.session_state.messages.append({"role": "assistant", "content": response})
