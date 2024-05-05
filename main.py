@@ -3,7 +3,6 @@ from langchain_utils import invoke_chain
 
 st.title("Langchain NL2SQL Chatbot")
 
-from unsloth import FastLanguageModel
 from transformers import LlamaTokenizer, LlamaForCausalLM, AutoTokenizer
 import torch
 
