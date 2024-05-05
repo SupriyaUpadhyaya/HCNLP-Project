@@ -19,8 +19,7 @@ def load_model():
     "basavaraj/text2sql-Llama3-8b",
     load_in_4bit=True,
     torch_dtype=torch.float16,)
-    st.session_state["model"] = model
-    st.session_state["tokenizer"] = tokenizer
+    return model, tokenizer
 
 if "model_name" not in st.session_state:
     st.session_state["model_name"] = "basavaraj/text2sql-Llama3-8b"
@@ -36,7 +35,7 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-load_model()
+model, tokenizer = load_model()
 
 # Accept user input
 if prompt := st.chat_input("What is up?"):
@@ -49,6 +48,6 @@ if prompt := st.chat_input("What is up?"):
     # Display assistant response in chat message container
     with st.spinner("Generating response..."):
         with st.chat_message("assistant"):
-            response = invoke_chain(prompt, st.session_state.messages, st.session_state.tokenizer, st.session_state.model)
+            response = invoke_chain(prompt, st.session_state.messages, model, tokenizer)
             st.markdown(response)
     st.session_state.messages.append({"role": "assistant", "content": response})
