@@ -12,7 +12,6 @@ dtype = None # None for auto detection. Float16 for Tesla T4, V100, Bfloat16 for
 load_in_4bit = True # Use 4bit quantization to reduce memory usage. Can be False.
 
 # Set a default model
-@st.cache_resource
 def load_model():
     tokenizer = AutoTokenizer.from_pretrained("basavaraj/text2sql-Llama3-8b")
     model = LlamaForCausalLM.from_pretrained(
@@ -24,6 +23,7 @@ def load_model():
 
 if "model_name" not in st.session_state:
     st.session_state["model_name"] = "basavaraj/text2sql-Llama3-8b"
+    load_model()
 
 # Initialize chat history
 if 'messages' not in st.session_state:
@@ -35,8 +35,6 @@ print("st.session_state.messages :", st.session_state.messages)
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
-
-load_model()
 
 # Accept user input
 if prompt := st.chat_input("What is up?"):
