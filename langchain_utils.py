@@ -8,7 +8,6 @@ from langchain_core.prompts import MessagesPlaceholder, ChatPromptTemplate
 from langchain_community.tools.sql_database.tool import QuerySQLDataBaseTool
 from langchain_community.utilities.sql_database import SQLDatabase
 from core.const import refiner_template
-from core.utils import parse_json, parse_sql_from_string, add_prefix, load_json_file, extract_world_info, is_email, is_valid_date_column
 
 import sqlite3
 import streamlit as st
@@ -125,7 +124,7 @@ class Refiner():
                fk_info: str,
                error_info: dict) -> dict:
         
-        sql_arg = add_prefix(error_info.get('sql'))
+        sql_arg = error_info.get('sql')
         sqlite_error = error_info.get('sqlite_error')
         exception_class = error_info.get('exception_class')
         prompt = refiner_template.format(query=query, evidence=evidence, desc_str=schema_info, \
@@ -192,6 +191,7 @@ def invoke_chain(question,messages,tokenizer,model):
         )
         answer = response[0]
         print("Answer :", response)
+
         st.session_state.history.add_user_message(question)
         st.session_state.history.add_ai_message(exec_result['sql'])
         if len(st.session_state.history.messages) > 10:
