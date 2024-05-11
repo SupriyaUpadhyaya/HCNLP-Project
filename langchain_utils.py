@@ -14,7 +14,7 @@ import streamlit as st
 
 text_to_sql_tmpl_str = """\### Instruction:\n{system_message}{user_message}\n\n### Response:\n{response}"""
 
-text_to_sql_inference_tmpl_str = """\### Instruction:\n{system_message}{user_message}"""
+text_to_sql_inference_tmpl_str = """\### Instruction:\n{system_message}{user_message}### Response:\n"""
 
 db = SQLDatabase.from_uri("sqlite:////content/drive/MyDrive/HCNLP-Text2Sql-Project/worlddb.db", sample_rows_in_table_info=2)
 context = db.table_info
@@ -189,6 +189,7 @@ def invoke_chain(question,messages,tokenizer,model):
       answer = "Sorry, could not retrive the answer. Please rephrase your question more accurately."
     
     with open("app_logs.log", "a", buffering=1) as logfile:
+            logfile.write(f"text2sql_tmpl_str: {text2sql_tmpl_str}\n")
             logfile.write(f"User Question: {question}\n")
             logfile.write(f"Generated SQL Query: {exec_result['sql']}\n")
             if 'data' in exec_result:
