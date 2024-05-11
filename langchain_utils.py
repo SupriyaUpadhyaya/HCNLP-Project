@@ -125,14 +125,15 @@ class Refiner():
         query = response[0]
         return query
 
-def invoke_chain(question,messages,tokenizer,model):
+def invoke_chain(question,messages,tokenizer,model,contextRetriever):
     #print("question : ", question)
     if 'history' not in st.session_state:
         print("Creating session state")
         st.session_state.history = ChatMessageHistory()
     messages = st.session_state.history.messages
+    new_context = contextRetriever.get_table_context_and_rows_str(question)
     text2sql_tmpl_str = _generate_prompt_sql(
-        question, context, dialect="sqlite", output="", messages=messages
+        question, new_context, dialect="sqlite", output="", messages=messages
     )
     #print("text2sql_tmpl_str : ", text2sql_tmpl_str)
     inputs = tokenizer(text2sql_tmpl_str, return_tensors = "pt").to("cuda")
@@ -189,6 +190,7 @@ def invoke_chain(question,messages,tokenizer,model):
       answer = "Sorry, could not retrive the answer. Please rephrase your question more accurately."
     
     with open("app_logs.log", "a", buffering=1) as logfile:
+            logfile.write(f"new_context: {new_context}\n")
             logfile.write(f"text2sql_tmpl_str: {text2sql_tmpl_str}\n")
             logfile.write(f"User Question: {question}\n")
             logfile.write(f"Generated SQL Query: {exec_result['sql']}\n")

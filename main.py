@@ -6,7 +6,7 @@ st.title("Langchain NL2SQL Chatbot")
 
 from transformers import LlamaTokenizer, LlamaForCausalLM, AutoTokenizer
 import torch
-
+from context_retriever import ContextRetriever
 
 max_seq_length = 2048 # Choose any! We auto support RoPE Scaling internally!
 dtype = None # None for auto detection. Float16 for Tesla T4, V100, Bfloat16 for Ampere+
@@ -20,8 +20,10 @@ def load_model():
     load_in_4bit=True,
     torch_dtype=torch.float16,)
     FastLanguageModel.for_inference(model)
+    contextRetriever = ContextRetriever()
     st.session_state["model"] = model
     st.session_state["tokenizer"] = tokenizer
+    st.session_state["contextRetriever"] = contextRetriever
 
 if "model" not in st.session_state:
     st.session_state["model_name"] = "basavaraj/text2sql-Llama3-8b"
@@ -49,6 +51,6 @@ if prompt := st.chat_input("What is up?"):
     # Display assistant response in chat message container
     with st.spinner("Generating response..."):
         with st.chat_message("assistant"):
-            response = invoke_chain(prompt, st.session_state.messages, st.session_state.tokenizer, st.session_state.model)
+            response = invoke_chain(prompt, st.session_state.messages, st.session_state.tokenizer, st.session_state.model, st.session_state.contextRetriever)
             st.markdown(response)
     st.session_state.messages.append({"role": "assistant", "content": response})
