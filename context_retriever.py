@@ -26,14 +26,12 @@ from pathlib import Path
 from typing import Dict
 from typing import List
 
-class contextRetriever():
+class ContextRetriever():
     def __init__(self):
-        super().__init__()
         self.engine = create_engine("sqlite:////content/worlddb.db")
 
         self.sql_database = SQLDatabase(engine)
 
-        self.table_node_mapping = SQLTableNodeMapping(sql_database)
         self.table_schema_objs = [
             SQLTableSchema(table_name="city", context_str="City"),
             SQLTableSchema(table_name="country", context_str="country"),
@@ -53,7 +51,7 @@ class contextRetriever():
             print(f"Indexing rows in table: {table_name}")
             if not os.path.exists(f"{self.table_index_dir}/{table_name}"):
                 # get all rows from table
-                with engine.connect() as conn:
+                with self.engine.connect() as conn:
                     cursor = conn.execute(text(f'SELECT * FROM "{table_name}"'))
                     result = cursor.fetchall()
                     row_tups = []
@@ -64,19 +62,19 @@ class contextRetriever():
                 nodes = [TextNode(text=str(t)) for t in row_tups]
 
                 # put into vector store index (use OpenAIEmbeddings by default)
-                index = VectorStoreIndex(nodes, embed_model=embed_model)
+                index = VectorStoreIndex(nodes, embed_model=self.embed_model)
 
                 # save index
                 index.set_index_id("vector_index")
-                index.storage_context.persist(f"{table_index_dir}/{table_name}")
+                index.storage_context.persist(f"{self.table_index_dir}/{table_name}")
             else:
                 # rebuild storage context
                 storage_context = StorageContext.from_defaults(
-                    persist_dir=f"{table_index_dir}/{table_name}"
+                    persist_dir=f"{self.table_index_dir}/{table_name}"
                 )
                 # load index
                 index = load_index_from_storage(
-                    storage_context, index_id="vector_index", embed_model=embed_model
+                    storage_context, index_id="vector_index", embed_model=self.embed_model
                 )
             self.vector_index_dict[table_name] = index
 
