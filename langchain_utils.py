@@ -22,7 +22,7 @@ context = db.table_info
 def _generate_prompt_sql(input, context, dialect="sqlite", output="", messages=""):
     system_message = f"""You are a powerful text-to-SQL model. Your job is to answer questions about a database. You are given a question and context regarding one or more tables.
 
-You must output the SQL query that answers the question. Use the previous conversation to answer the follow up questions. Do not provide any explanation
+You must output the SQL query that answers the question. The previous conversation is to be used only if it is relevant to the current question. Do not provide any explanation
 
     """
     user_message = f"""### Dialect:
@@ -142,7 +142,7 @@ def invoke_chain(question,messages,tokenizer,model,contextRetriever):
     response = tokenizer.batch_decode(
       outputs[:, input_length:], skip_special_tokens=True
     )
-    query = response[0]
+    query = response[0].split("\n")[0]
     #print("Generated query : ", query)
     count = 0
     refiner = Refiner(data_path="/content/drive/MyDrive/HCNLP-Text2Sql-Project/worlddb.db", dataset_name='worlddb', tokenizer=tokenizer, model=model)
@@ -156,7 +156,7 @@ def invoke_chain(question,messages,tokenizer,model,contextRetriever):
         #print("is_refine_required :", is_refine_required)
         if is_refine_required:
             is_refined = True
-            query_generated = refiner._refine(query=query_generated, evidence=exec_result, schema_info=db.table_info, fk_info="", error_info=exec_result)
+            query_generated = refiner._refine(query=query_generated, evidence=exec_result, schema_info=new_context, fk_info="", error_info=exec_result)
             refined_generations.append(query_generated)
             exec_result = refiner._execute_sql(sql=query_generated, question=question)
             #print("exec_result :", exec_result)

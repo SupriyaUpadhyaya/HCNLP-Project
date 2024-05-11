@@ -16,8 +16,6 @@ When you find an answer, verify the answer carefully. Include verifiable evidenc
 {evidence}
 ### Database info:
 {desc_str}
-### Foreign keys:
-{fk_str}
 ### old SQL:
 {sql}
 ### SQLite error: 
