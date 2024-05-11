@@ -62,7 +62,7 @@ class Refiner():
             return {
                 "question": question,
                 "sql": str(sql),
-                "data": result[:5],
+                "data": result,
                 "sqlite_error": "",
                 "exception_class": ""
             }
@@ -190,7 +190,7 @@ def invoke_chain(question,messages,tokenizer,model,contextRetriever):
       answer = "Sorry, could not retrive the answer. Please rephrase your question more accurately."
     
     with open("app_logs.log", "a", buffering=1) as logfile:
-            logfile.write(f"new_context: {new_context}\n")
+            #logfile.write(f"new_context: {new_context}\n")
             logfile.write(f"text2sql_tmpl_str: {text2sql_tmpl_str}\n")
             logfile.write(f"User Question: {question}\n")
             logfile.write(f"Generated SQL Query: {exec_result['sql']}\n")
