@@ -78,7 +78,7 @@ class ContextRetriever():
                 )
             self.vector_index_dict[table_name] = index
 
-    def get_table_context_and_rows_str(
+    def get_table_context_and_rows_str(self,
         query_str: str
     ):
         """Get table context string."""
