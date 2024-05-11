@@ -199,8 +199,9 @@ def invoke_chain(question,messages,tokenizer,model,contextRetriever):
             logfile.write(f"===========================================================\n")
 
     if 'data' in exec_result:
-        st.session_state.history.messages.pop()
-        st.session_state.history.messages.pop()
+        if len(st.session_state.history.messages) == 2:
+            st.session_state.history.messages.pop()
+            st.session_state.history.messages.pop()
         st.session_state.history.add_user_message(question)
         st.session_state.history.add_ai_message(exec_result['sql'])
     return answer
