@@ -129,11 +129,10 @@ def invoke_chain(question,messages,tokenizer,model,contextRetriever):
     #print("question : ", question)
     if 'history' not in st.session_state:
         st.session_state.history = ChatMessageHistory()
-    messages = st.session_state.history.messages
-    hist = messages
+    prev_hist = st.session_state.history.messages
     new_context = contextRetriever.get_table_context_and_rows_str(question)
     text2sql_tmpl_str = _generate_prompt_sql(
-        question, new_context, dialect="sqlite", output="", messages=messages
+        question, new_context, dialect="sqlite", output="", messages=prev_hist
     )
     #print("text2sql_tmpl_str : ", text2sql_tmpl_str)
     inputs = tokenizer(text2sql_tmpl_str, return_tensors = "pt").to("cuda")
@@ -180,11 +179,6 @@ def invoke_chain(question,messages,tokenizer,model,contextRetriever):
         )
         answer = response[0]
         print("Answer :", response)
-
-        st.session_state.history.messages.pop()
-        st.session_state.history.messages.pop()
-        st.session_state.history.add_user_message(question)
-        st.session_state.history.add_ai_message(exec_result['sql'])
     else:
       answer = "Sorry, could not retrive the answer. Please rephrase your question more accurately."
     
@@ -200,6 +194,12 @@ def invoke_chain(question,messages,tokenizer,model,contextRetriever):
             logfile.write(f"Is refined: {is_refined}\n")
             logfile.write(f"Refined queries: {refined_generations}\n")
             logfile.write(f"===========================================================\n")
+
+    if 'data' in exec_result:
+        st.session_state.history.messages.pop()
+        st.session_state.history.messages.pop()
+        st.session_state.history.add_user_message(question)
+        st.session_state.history.add_ai_message(exec_result['sql'])
     return answer
 
 
