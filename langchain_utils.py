@@ -128,10 +128,9 @@ class Refiner():
 def invoke_chain(question,messages,tokenizer,model,contextRetriever):
     #print("question : ", question)
     if 'history' not in st.session_state:
-        print("Creating session state")
         st.session_state.history = ChatMessageHistory()
     messages = st.session_state.history.messages
-    print("history ", messages)
+    hist = messsages
     new_context = contextRetriever.get_table_context_and_rows_str(question)
     text2sql_tmpl_str = _generate_prompt_sql(
         question, new_context, dialect="sqlite", output="", messages=messages
@@ -182,11 +181,10 @@ def invoke_chain(question,messages,tokenizer,model,contextRetriever):
         answer = response[0]
         print("Answer :", response)
 
+        st.session_state.history.messages.pop()
+        st.session_state.history.messages.pop()
         st.session_state.history.add_user_message(question)
         st.session_state.history.add_ai_message(exec_result['sql'])
-        if len(st.session_state.history.messages) > 2:
-            st.session_state.history.messages.pop()
-            st.session_state.history.messages.pop()
     else:
       answer = "Sorry, could not retrive the answer. Please rephrase your question more accurately."
     
@@ -198,7 +196,7 @@ def invoke_chain(question,messages,tokenizer,model,contextRetriever):
             if 'data' in exec_result:
                 logfile.write(f"SQL Result: {exec_result['data']}\n")
             logfile.write(f"Answer: {answer}\n")
-            logfile.write(f"Previous conversation : {messages}\n")
+            logfile.write(f"Previous conversation : {hist}\n")
             logfile.write(f"Is refined: {is_refined}\n")
             logfile.write(f"Refined queries: {refined_generations}\n")
             logfile.write(f"===========================================================\n")
