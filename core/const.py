@@ -19,9 +19,7 @@ When you find an answer, verify the answer carefully. Include verifiable evidenc
 ### Foreign keys:
 {fk_str}
 ### old SQL:
-```sql
 {sql}
-```
 ### SQLite error: 
 {sqlite_error}
 ### Exception class:

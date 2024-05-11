@@ -16,7 +16,7 @@ text_to_sql_tmpl_str = """\
 ### Instruction:\n{system_message}{user_message}\n\n### Response:\n{response}"""
 
 text_to_sql_inference_tmpl_str = """\
-### Instruction:\n{system_message}{user_message}\n\n### Response:\n"""
+### Instruction:\n{system_message}{user_message}"""
 
 db = SQLDatabase.from_uri("sqlite:////content/drive/MyDrive/HCNLP-Text2Sql-Project/worlddb.db", sample_rows_in_table_info=2)
 context = db.table_info
