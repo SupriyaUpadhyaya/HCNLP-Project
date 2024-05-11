@@ -28,7 +28,7 @@ from typing import List
 
 class ContextRetriever():
     def __init__(self):
-        self.engine = create_engine("sqlite:////content/worlddb.db")
+        self.engine = create_engine("sqlite:////content/drive/MyDrive/HCNLP-Text2Sql-Project/worlddb.db")
 
         self.sql_database = SQLDatabase(self.engine)
 
