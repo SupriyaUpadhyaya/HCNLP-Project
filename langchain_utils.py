@@ -165,7 +165,7 @@ def invoke_chain(question,messages,tokenizer,model,contextRetriever):
         answer_prompt = f'''Given the user question, corresponding SQL query, and SQL result, answer the user question.
 
 Here is a typical example:
-==========
+
 Question: List name and population of the 5 cities in country with Italian language?
 SQL Query: SELECT Name, Population FROM city WHERE CountryCode IN (SELECT Code FROM country WHERE Name = 'Italy') ORDER BY Population DESC LIMIT 5
 SQL Result: [('Roma', 2643581), ('Milano', 1300977), ('Napoli', 1002619), ('Torino', 903705), ('Palermo', 683794)]
@@ -176,15 +176,12 @@ Answer: Here's the list 5 cities in country with Italian language
 3. Napoli,1002619
 4. Torino, 903705
 5. Palermo, 683794
-==========
 
 Here is another typical example:
-==========
 Question: What percentage of population speaks Kannada in the country Bangalore?
 SQL Query: SELECT Percentage FROM countrylanguage WHERE Language = "Kannada" AND CountryCode IN (SELECT CountryCode FROM city WHERE Name = "Bangalore")
 SQL Result:  [(3.9,)]
 Answer: 3.9% of the population speaks Kannada in the country Bangalore.
-==========
 
 Here is a new example, please start answering:
 
