@@ -30,7 +30,7 @@ class ContextRetriever():
     def __init__(self):
         self.engine = create_engine("sqlite:////content/worlddb.db")
 
-        self.sql_database = SQLDatabase(engine)
+        self.sql_database = SQLDatabase(self.engine)
 
         self.table_schema_objs = [
             SQLTableSchema(table_name="city", context_str="City"),
