@@ -12,11 +12,9 @@ from core.const import refiner_template
 import sqlite3
 import streamlit as st
 
-text_to_sql_tmpl_str = """\
-### Instruction:\n{system_message}{user_message}\n\n### Response:\n{response}"""
+text_to_sql_tmpl_str = """\### Instruction:\n{system_message}{user_message}\n\n### Response:\n{response}"""
 
-text_to_sql_inference_tmpl_str = """\
-### Instruction:\n{system_message}{user_message}"""
+text_to_sql_inference_tmpl_str = """\### Instruction:\n{system_message}{user_message}"""
 
 db = SQLDatabase.from_uri("sqlite:////content/drive/MyDrive/HCNLP-Text2Sql-Project/worlddb.db", sample_rows_in_table_info=2)
 context = db.table_info
@@ -40,16 +38,7 @@ You must output the SQL query that answers the question. Use the previous conver
 {messages}
 
 """
-    if output:
-        return text_to_sql_tmpl_str.format(
-            system_message=system_message,
-            user_message=user_message,
-            response=output,
-        )
-    else:
-        return text_to_sql_inference_tmpl_str.format(
-            system_message=system_message, user_message=user_message
-        )
+    return text_to_sql_inference_tmpl_str.format(system_message=system_message, user_message=user_message)
 
 class Refiner():
   
