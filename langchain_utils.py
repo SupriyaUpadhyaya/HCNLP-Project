@@ -189,6 +189,9 @@ def invoke_chain(question,messages,tokenizer,model,contextRetriever):
             logfile.write(f"Generated SQL Query: {exec_result['sql']}\n")
             if 'data' in exec_result:
                 logfile.write(f"SQL Result: {exec_result['data']}\n")
+            else:
+                logfile.write(f"sqlite_error: {exec_result['sqlite_error']}\n")
+                logfile.write(f"exception_class: {exec_result['exception_class']}\n")
             logfile.write(f"Answer: {answer}\n")
             logfile.write(f"Previous conversation : {prev_hist}\n")
             logfile.write(f"Is refined: {is_refined}\n")
