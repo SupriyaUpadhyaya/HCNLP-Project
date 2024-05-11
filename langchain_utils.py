@@ -21,10 +21,6 @@ text_to_sql_inference_tmpl_str = """\
 db = SQLDatabase.from_uri("sqlite:////content/drive/MyDrive/HCNLP-Text2Sql-Project/worlddb.db", sample_rows_in_table_info=2)
 context = db.table_info
 
-if 'history' not in st.session_state:
-    print("Creating session state")
-    st.session_state.history = ChatMessageHistory()
-
 def _generate_prompt_sql(input, context, dialect="sqlite", output="", messages=""):
     system_message = f"""You are a powerful text-to-SQL model. Your job is to answer questions about a database. You are given a question and context regarding one or more tables.
 
@@ -142,6 +138,9 @@ class Refiner():
 
 def invoke_chain(question,messages,tokenizer,model):
     #print("question : ", question)
+    if 'history' not in st.session_state:
+        print("Creating session state")
+        st.session_state.history = ChatMessageHistory()
     messages = st.session_state.history.messages
     text2sql_tmpl_str = _generate_prompt_sql(
         question, context, dialect="sqlite", output="", messages=messages

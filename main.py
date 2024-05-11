@@ -1,5 +1,6 @@
 import streamlit as st
 from langchain_utils import invoke_chain
+from unsloth import FastLanguageModel
 
 st.title("Langchain NL2SQL Chatbot")
 
@@ -18,10 +19,11 @@ def load_model():
     "basavaraj/text2sql-Llama3-8b",
     load_in_4bit=True,
     torch_dtype=torch.float16,)
+    FastLanguageModel.for_inference(model)
     st.session_state["model"] = model
     st.session_state["tokenizer"] = tokenizer
 
-if "model_name" not in st.session_state:
+if "model" not in st.session_state:
     st.session_state["model_name"] = "basavaraj/text2sql-Llama3-8b"
     load_model()
 
