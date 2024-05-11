@@ -22,7 +22,7 @@ context = db.table_info
 def _generate_prompt_sql(input, context, dialect="sqlite", output="", messages=""):
     system_message = f"""You are a powerful text-to-SQL model. Your job is to answer questions about a database. You are given a question and context regarding one or more tables.
 
-You must output the SQL query that answers the question. The previous conversation is to be used only if it is relevant to the current question. Do not provide any explanation
+You must output the SQL query that answers the question. Do not provide any explanation
 
     """
     user_message = f"""### Dialect:
@@ -33,9 +33,6 @@ You must output the SQL query that answers the question. The previous conversati
 
 ### Context:
 {context}
-
-### Previous Conversation:
-{messages}
 
 """
     return text_to_sql_inference_tmpl_str.format(system_message=system_message, user_message=user_message)
