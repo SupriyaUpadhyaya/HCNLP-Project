@@ -130,7 +130,7 @@ def invoke_chain(question,messages,tokenizer,model,contextRetriever):
     if 'history' not in st.session_state:
         st.session_state.history = ChatMessageHistory()
     messages = st.session_state.history.messages
-    hist = messsages
+    hist = messages
     new_context = contextRetriever.get_table_context_and_rows_str(question)
     text2sql_tmpl_str = _generate_prompt_sql(
         question, new_context, dialect="sqlite", output="", messages=messages
