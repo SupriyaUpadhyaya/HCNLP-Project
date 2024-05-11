@@ -27,7 +27,8 @@ from typing import Dict
 from typing import List
 
 class contextRetriever():
-    def __init__():
+    def __init__(self):
+        super().__init__()
         self.engine = create_engine("sqlite:////content/worlddb.db")
 
         self.sql_database = SQLDatabase(engine)
