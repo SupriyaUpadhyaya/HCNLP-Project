@@ -191,7 +191,6 @@ Here is a new example, please start answering:
 Question: {exec_result['question']}
 SQL Query: {exec_result['sql']}
 SQL Result: {exec_result['data']}
-}
 Answer:'''
         inputs = tokenizer(answer_prompt, return_tensors = "pt").to("cuda")
 
