@@ -190,7 +190,7 @@ def invoke_chain(question,messages,tokenizer,model,contextRetriever):
             if 'data' in exec_result:
                 logfile.write(f"SQL Result: {exec_result['data']}\n")
             logfile.write(f"Answer: {answer}\n")
-            logfile.write(f"Previous conversation : {hist}\n")
+            logfile.write(f"Previous conversation : {prev_hist}\n")
             logfile.write(f"Is refined: {is_refined}\n")
             logfile.write(f"Refined queries: {refined_generations}\n")
             logfile.write(f"===========================================================\n")
