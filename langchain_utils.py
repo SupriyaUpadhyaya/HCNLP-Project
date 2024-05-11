@@ -164,7 +164,7 @@ def invoke_chain(question,messages,tokenizer,model,contextRetriever):
         else:
             count = 6
 
-    if 'data' in exec_result:
+    if 'data' in exec_result and len(exec_result['data']) > 0 :
         answer_prompt = f'''Given the following user question, corresponding SQL query, and SQL result, answer the user question in a sentence.
  Question: {exec_result['question']}
  SQL Query: {exec_result['sql']}
