@@ -230,7 +230,7 @@ Answer:'''
     else:
       answer = "Sorry, could not retrive the answer. Please rephrase your question more accurately."
 
-    log_content = write_log(question, exec_result, answer, messages, is_refined, refined_generations)  
+    log_content = write_log(question, exec_result, answer, prev_hist, is_refined, refined_generations)  
     st.session_state.current_log = log_content
 
     if 'data' in exec_result:
