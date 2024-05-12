@@ -25,6 +25,14 @@ import os
 from pathlib import Path
 from typing import Dict
 from typing import List
+from llama_index.core.objects import (
+    SQLTableNodeMapping,
+    ObjectIndex,
+    SQLTableSchema,
+)
+from llama_index.core import SQLDatabase, VectorStoreIndex
+from llama_index.core.retrievers import SQLRetriever
+from typing import List
 
 class ContextRetriever():
     def __init__(self):
@@ -78,12 +86,24 @@ class ContextRetriever():
                 )
             self.vector_index_dict[table_name] = index
 
+    def get_object_retriever(self):
+        table_node_mapping = SQLTableNodeMapping(self.sql_database)
+        obj_index = ObjectIndex.from_objects(
+            self.table_schema_objs,
+            table_node_mapping,
+            VectorStoreIndex,
+        embed_model=self.embed_model)
+        obj_retriever = obj_index.as_retriever(similarity_top_k=3)
+        return obj_retriever
+
     def get_table_context_and_rows_str(self,
         query_str: str
     ):
         """Get table context string."""
         context_strs = []
-        for table_schema_obj in self.table_schema_objs:
+        object_retriever = self.get_object_retriever()
+        table_schema_objs = object_retriever.retrieve(query_str)
+        for table_schema_obj in table_schema_objs:
             # first append table info + additional context
             table_info = self.sql_database.get_single_table_info(
                 table_schema_obj.table_name
