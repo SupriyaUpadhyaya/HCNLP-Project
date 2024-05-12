@@ -118,7 +118,6 @@ class Refiner():
 
   def _refine(self,
                query: str,
-               evidence:str,
                schema_info: str,
                fk_info: str,
                error_info: dict) -> dict:
@@ -126,8 +125,8 @@ class Refiner():
         sql_arg = error_info.get('sql')
         sqlite_error = error_info.get('sqlite_error')
         exception_class = error_info.get('exception_class')
-        prompt = refiner_template.format(query=query, evidence=evidence, desc_str=schema_info, \
-                                       fk_str=fk_info, sql=sql_arg, sqlite_error=sqlite_error, \
+        prompt = refiner_template.format(query=query, desc_str=schema_info, \
+                                       sql=sql_arg, sqlite_error=sqlite_error, \
                                         exception_class=exception_class)
 
         #word_info = extract_world_info(self._message)
@@ -199,7 +198,7 @@ def invoke_chain(question,messages,tokenizer,model,contextRetriever, follow_up=F
         #print("is_refine_required :", is_refine_required)
         if is_refine_required:
             is_refined = True
-            query_generated = refiner._refine(query=query_generated, evidence=exec_result, schema_info=new_context, fk_info="", error_info=exec_result)
+            query_generated = refiner._refine(query=query_generated, schema_info=new_context, fk_info="", error_info=exec_result)
             refined_generations.append(query_generated)
             exec_result = refiner._execute_sql(sql=query_generated, question=question)
             #print("exec_result :", exec_result)
