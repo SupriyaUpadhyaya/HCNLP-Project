@@ -13,7 +13,7 @@ with col1:
         st.session_state.follow_up = False
 with col2:
     if st.checkbox("Clear All"):
-        st.session_state.messages_1 = []
+        st.session_state.messages = []
         st.session_state.pop("query")
         
 from transformers import LlamaTokenizer, LlamaForCausalLM, AutoTokenizer
