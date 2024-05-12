@@ -150,9 +150,14 @@ def invoke_chain(question,messages,tokenizer,model,contextRetriever, follow_up=F
         st.session_state.history = ChatMessageHistory()
     prev_hist = st.session_state.history.messages
     new_context = contextRetriever.get_table_context_and_rows_str(question)
-    text2sql_tmpl_str = _generate_prompt_sql(
-        question, new_context, dialect="sqlite", output="", messages=prev_hist
-    )
+    if follow_up:
+        text2sql_tmpl_str = _generate_prompt_sql(
+            question, new_context, dialect="sqlite", output="", messages=prev_hist
+        )
+    else:
+        text2sql_tmpl_str = _generate_prompt_sql(
+            question, new_context, dialect="sqlite", output="", messages=''
+        )
     #print("text2sql_tmpl_str : ", text2sql_tmpl_str)
     inputs = tokenizer(text2sql_tmpl_str, return_tensors = "pt").to("cuda")
 
