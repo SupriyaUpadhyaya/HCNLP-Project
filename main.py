@@ -1,6 +1,7 @@
 import streamlit as st
 from langchain_utils import invoke_chain
 from unsloth import FastLanguageModel
+import time
 
 st.title("🦙SQLAssist: NL2SQL Chatbot🤖")
 col1, col2,col3,col4,col5 = st.columns(5)
