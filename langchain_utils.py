@@ -183,9 +183,6 @@ def find_previous_lines(text):
     previous_lines.append(current_line)
   return previous_lines
 
-text = "This is some text\n\nAn empty line\nAnother line with text"
-previous_line = find_previous_line(text)
-
 def invoke_chain(question,messages,tokenizer,model,contextRetriever, follow_up=False):
     #print("question : ", question)
     if 'history' not in st.session_state:
