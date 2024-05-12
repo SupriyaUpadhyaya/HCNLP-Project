@@ -35,7 +35,7 @@ from llama_index.core.retrievers import SQLRetriever
 from typing import List
 
 class ContextRetriever():
-    def __init__(self):
+    def __init__(self, k):
         self.engine = create_engine("sqlite:////content/drive/MyDrive/HCNLP-Text2Sql-Project/worlddb.db")
 
         self.sql_database = SQLDatabase(self.engine)
@@ -49,7 +49,7 @@ class ContextRetriever():
         self.embed_model = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
 
         self.table_index_dir = "table_index_dir"
-
+        self.topk = k
         if not Path(self.table_index_dir).exists():
             os.makedirs(self.table_index_dir)
 
@@ -93,7 +93,7 @@ class ContextRetriever():
             table_node_mapping,
             VectorStoreIndex,
         embed_model=self.embed_model)
-        obj_retriever = obj_index.as_retriever(similarity_top_k=1)
+        obj_retriever = obj_index.as_retriever(similarity_top_k=self.topk)
         return obj_retriever
 
     def get_table_context_and_rows_str(self,
@@ -125,4 +125,4 @@ class ContextRetriever():
                 table_info += table_row_context
 
             context_strs.append(table_info)
-        return "\n\n".join(context_strs)
+        return "\n\n".join(context_strs), table_schema_objs

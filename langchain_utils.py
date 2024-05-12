@@ -125,9 +125,10 @@ class Refiner():
         query = response[0]
         return query
 
-def write_log(question, exec_result, answer, messages, is_refined, refined_generations):
+def write_log(question, selected_tables, exec_result, answer, messages, is_refined, refined_generations):
     log_string = (
         f"```User Question: {question}\n"
+        f"```Selected Tables: {selected_tables}\n"
         f"Generated SQL Query: {exec_result.get('sql', '')}\n"  # Use get to avoid KeyError if 'sql' is missing
     )
     if 'data' in exec_result:
@@ -152,7 +153,7 @@ def invoke_chain(question,messages,tokenizer,model,contextRetriever, follow_up=F
     if 'history' not in st.session_state:
         st.session_state.history = ChatMessageHistory()
     prev_hist = st.session_state.history.messages
-    new_context = contextRetriever.get_table_context_and_rows_str(question)
+    new_context, selected_tables = contextRetriever.get_table_context_and_rows_str(question)
     if follow_up:
         text2sql_tmpl_str = _generate_prompt_sql(
             question, new_context, dialect="sqlite", output="", messages=prev_hist
@@ -231,7 +232,7 @@ Answer:'''
     else:
       answer = "Sorry, could not retrive the answer. Please rephrase your question more accurately."
 
-    log_content = write_log(question, exec_result, answer, prev_hist, is_refined, refined_generations)  
+    log_content = write_log(question, selected_tables, exec_result, answer, prev_hist, is_refined, refined_generations)  
     st.session_state.current_log = log_content
 
     if 'data' in exec_result:

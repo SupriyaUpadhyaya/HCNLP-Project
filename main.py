@@ -5,18 +5,18 @@ import time
 from langchain.memory import ChatMessageHistory
 
 st.title("🦙SQLAssist: NL2SQL Chatbot🤖")
-col1, col2,col3,col4,col5 = st.columns(5)
 st.markdown('#') 
-with col1:
-    if st.checkbox("Follow up"):
-        st.session_state.follow_up = True
-    else:
-        st.session_state.follow_up = False
-with col2:
-    if st.checkbox("Clear All"):
-        st.session_state.messages = []
-        st.session_state.query = ""
-        st.session_state.history = ChatMessageHistory()
+st.sidebar.title("Settings")
+if st.sidebar.checkbox("Follow up"):
+    st.session_state.follow_up = True
+else:
+    st.session_state.follow_up = False
+if st.sidebar.checkbox("Clear All"):
+    st.session_state.messages = []
+    st.session_state.query = ""
+    st.session_state.history = ChatMessageHistory()
+st.session_state.topk = st.sidebar.slider("Use top k tables", 1, 3, 3)
+    
         
 from transformers import LlamaTokenizer, LlamaForCausalLM, AutoTokenizer
 import torch
@@ -34,7 +34,7 @@ def load_model():
     load_in_4bit=True,
     torch_dtype=torch.float16,)
     FastLanguageModel.for_inference(model)
-    contextRetriever = ContextRetriever()
+    contextRetriever = ContextRetriever(k=st.session_state.topk)
     st.session_state["model"] = model
     st.session_state["tokenizer"] = tokenizer
     st.session_state["contextRetriever"] = contextRetriever
