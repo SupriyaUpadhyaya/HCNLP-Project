@@ -232,7 +232,7 @@ def invoke_chain(question,messages,tokenizer,model,contextRetriever, follow_up=F
             count = 6
 
     if 'data' in exec_result and len(exec_result['data']) > 0 :
-        answer_prompt = f'''Given the user question, corresponding SQL query, and SQL result, answer the user question.
+        answer_prompt = f'''Given the user question, corresponding SQL query, and SQL result, just answer the user question. Do not generate any code or anything.
 
 Here is a typical example:
 
