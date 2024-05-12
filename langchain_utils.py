@@ -1,31 +1,27 @@
 import os
 from dotenv import load_dotenv
-
 load_dotenv()
-
 from langchain.memory import ChatMessageHistory
 from langchain_core.prompts import MessagesPlaceholder, ChatPromptTemplate
 from langchain_community.tools.sql_database.tool import QuerySQLDataBaseTool
 from langchain_community.utilities.sql_database import SQLDatabase
 from core.const import refiner_template
-
 import sqlite3
 import streamlit as st
 
-text_to_sql_tmpl_str = """\### Instruction:\n{system_message}{user_message}\n\n### Response:\n{response}"""
-
-text_to_sql_inference_tmpl_str = """\### Instruction:\n{system_message}{user_message}### Response:\n"""
 
 db = SQLDatabase.from_uri("sqlite:////content/drive/MyDrive/HCNLP-Text2Sql-Project/worlddb.db", sample_rows_in_table_info=2)
 context = db.table_info
 
 def _generate_prompt_sql(input, context, dialect="sqlite", output="", messages=""):
+    text_to_sql_inference_tmpl_str = """\### Instruction:\n{system_message}{user_message}### Response:\n"""
+
     system_message = f"""You are a powerful text-to-SQL model. Your job is to answer questions about a database. You are given a question and context regarding one or more tables.
 
 You must output the SQL query that answers the question. Do not provide any explanation
 
     """
-    user_message = f"""### Dialect:
+    user_message_with_history = f"""### Dialect:
 {dialect}
 
 ### Input:
@@ -34,8 +30,29 @@ You must output the SQL query that answers the question. Do not provide any expl
 ### Context:
 {context}
 
+### Previous Conversation:
+{messages}
 """
-    return text_to_sql_inference_tmpl_str.format(system_message=system_message, user_message=user_message)
+
+    user_message = f"""### Dialect:
+{dialect}
+
+### Input:
+{input}
+
+### Context:
+{context}
+"""
+    if messages:
+        return text_to_sql_inference_tmpl_str.format(
+            system_message=system_message,
+            user_message=user_message_with_history,
+            response=output,
+        )
+    else:
+        return text_to_sql_inference_tmpl_str.format(
+            system_message=system_message, user_message=user_message
+        )
 
 class Refiner():
   
@@ -122,15 +139,43 @@ class Refiner():
         query = response[0]
         return query
 
-def invoke_chain(question,messages,tokenizer,model,contextRetriever):
+def write_log(question, exec_result, answer, messages, is_refined, refined_generations):
+    log_string = (
+        f"```User Question: {question}\n"
+        f"Generated SQL Query: {exec_result.get('sql', '')}\n"  # Use get to avoid KeyError if 'sql' is missing
+    )
+    if 'data' in exec_result:
+        log_string += f"SQL Result: {exec_result['data']}\n"
+    else:
+        log_string += f"SQL Error: {exec_result['sqlite_error']}\n"
+    log_string += (
+        f"Answer: {answer}\n"
+        f"Previous conversation : {messages}\n"
+        f"Is refined: {is_refined}\n"
+        f"Refined queries: {refined_generations}\n"
+    )
+
+    with open("app_logs.log", "a", buffering=1) as logfile:
+        log_string_end = log_string + f"===========================================================\n```"
+        logfile.write(log_string_end)
+
+    return log_string
+
+
+def invoke_chain(question,messages,tokenizer,model,contextRetriever, follow_up=False):
     #print("question : ", question)
     if 'history' not in st.session_state:
         st.session_state.history = ChatMessageHistory()
     prev_hist = st.session_state.history.messages
     new_context = contextRetriever.get_table_context_and_rows_str(question)
-    text2sql_tmpl_str = _generate_prompt_sql(
-        question, new_context, dialect="sqlite", output="", messages=prev_hist
-    )
+    if follow_up: 
+        text2sql_tmpl_str = _generate_prompt_sql(
+            question, context, dialect="sqlite", output="", messages=prev_hist
+        )
+    else:
+        text2sql_tmpl_str = _generate_prompt_sql(
+            question, context, dialect="sqlite", output="", messages=''
+        ) 
     #print("text2sql_tmpl_str : ", text2sql_tmpl_str)
     inputs = tokenizer(text2sql_tmpl_str, return_tensors = "pt").to("cuda")
 
@@ -144,6 +189,7 @@ def invoke_chain(question,messages,tokenizer,model,contextRetriever):
     count = 0
     refiner = Refiner(data_path="/content/drive/MyDrive/HCNLP-Text2Sql-Project/worlddb.db", dataset_name='worlddb', tokenizer=tokenizer, model=model)
     query_generated = query
+    st.session_state.query = query_generated
     exec_result = refiner._execute_sql(sql=query_generated, question=question)
     #print("exec_result : ", exec_result)
     is_refined = False
@@ -201,21 +247,8 @@ Answer:'''
     else:
       answer = "Sorry, could not retrive the answer. Please rephrase your question more accurately."
     
-    with open("app_logs.log", "a", buffering=1) as logfile:
-            #logfile.write(f"new_context: {new_context}\n")
-            logfile.write(f"text2sql_tmpl_str: {text2sql_tmpl_str}\n")
-            logfile.write(f"User Question: {question}\n")
-            logfile.write(f"Generated SQL Query: {exec_result['sql']}\n")
-            if 'data' in exec_result:
-                logfile.write(f"SQL Result: {exec_result['data']}\n")
-            else:
-                logfile.write(f"sqlite_error: {exec_result['sqlite_error']}\n")
-                logfile.write(f"exception_class: {exec_result['exception_class']}\n")
-            logfile.write(f"Answer: {answer}\n")
-            logfile.write(f"Previous conversation : {prev_hist}\n")
-            logfile.write(f"Is refined: {is_refined}\n")
-            logfile.write(f"Refined queries: {refined_generations}\n")
-            logfile.write(f"===========================================================\n")
+    log_content = write_log(question, exec_result, answer, messages, is_refined, refined_generations)
+    st.session_state.current_log = log_content
 
     if 'data' in exec_result:
         if len(st.session_state.history.messages) == 2:
