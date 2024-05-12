@@ -7,12 +7,6 @@ When you find an answer, verify the answer carefully. Include verifiable evidenc
 ### Constraints:
 - Review Query: Double-check your SQL query to ensure that the column name is spelled correctly.
 - Check Table Schema: Verify the schema of the table you're querying against to confirm the exact column names.
-- Use Aliases: If using aliases in your query, ensure that you're referencing the correct alias for the column name.
-- In SELECT <column>, just select needed columns in the 【Question】 without any unnecessary column or value
-- In FROM <table> or JOIN <table>, do not include unnecessary table
-- If use max or min func, JOIN <table> FIRST, THEN use SELECT MAX(<column>) or SELECT MIN(<column>)
-- If [Value examples] of <column> has 'None' or None, use JOIN <table> or WHERE <column> is NOT NULL is better
-- If use ORDER BY <column> ASC|DESC, add GROUP BY <column> before to select distinct values
 
 Here is a typical example:
 
