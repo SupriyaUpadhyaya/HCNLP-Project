@@ -33,9 +33,9 @@ class ContextRetriever():
         self.sql_database = SQLDatabase(self.engine)
 
         self.table_schema_objs = [
-            SQLTableSchema(table_name="city", context_str="Stores information about cities."),
-            SQLTableSchema(table_name="country", context_str="Stores information about countries "),
-            SQLTableSchema(table_name="countrylanguage", context_str="Connects countries with their spoken languages.")
+            SQLTableSchema(table_name="city", context_str="Stores information about cities. It has attributes like name (Name), country code (CountryCode), district (District), and population (Population). CountryCode is a foreign key referencing the Code field in the country table, indicating the country the city belongs to."),
+            SQLTableSchema(table_name="country", context_str="Stores information about countries. Each country has a unique three-letter code (Code) as the primary key. It holds details like country name (Name), continent (Continent), region (Region), land area (SurfaceArea), independence year (IndepYear) if applicable, population (Population), life expectancy (LifeExpectancy), and various economic data (GNP, GNPOld). It also stores information on government form (GovernmentForm), head of state (HeadOfState), and capital city reference (Capital - likely referencing the ID from the city table). Additional details include local name (LocalName), a secondary country code (Code2), and official language information (linked to the countrylanguage table)."),
+            SQLTableSchema(table_name="countrylanguage", context_str="Connects countries with their spoken languages. A combination of CountryCode (referencing the country table) and Language (language name) forms the primary key, ensuring a unique relationship between a country and its languages. It has an IsOfficial flag indicating if the language is officially recognized in the country. It also stores the percentage (Percentage) of the population speaking that language.")
         ]
 
         self.embed_model = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
