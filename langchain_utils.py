@@ -232,7 +232,7 @@ def invoke_chain(question,messages,tokenizer,model,contextRetriever, follow_up=F
             count = 6
 
     if 'data' in exec_result and len(exec_result['data']) > 0 :
-        answer_prompt = f'''Given the user question, corresponding SQL query, and SQL result, just answer the user question in a sentence or create a list if needed.
+        answer_prompt = f'''Given the user question, corresponding SQL query, and SQL result. List the answer if asked or just answer the user question in a sentence.
 
 Here is a typical example:
 
@@ -266,7 +266,7 @@ Answer:'''
         response = tokenizer.batch_decode(
             outputs[:, input_length:], skip_special_tokens=True
         )
-        response = find_previous_lines(response[0])
+        answer = response[0]
         print("Answer :", response)
     else:
       answer = "Sorry, could not retrive the answer. Please rephrase your question more accurately."
