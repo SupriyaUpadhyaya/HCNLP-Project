@@ -75,7 +75,7 @@ if prompt := st.chat_input("What is up?"):
             st.write_stream(stream_data)
     st.session_state.messages.append({"role": "assistant", "content": response})
    
-if "query" in st.session_state.query and st.session_state.query != "":
+if "query" in st.session_state and st.session_state.query != "":
     if st.toggle("View Query"):
         st.info(str(st.session_state.query))
     if st.toggle("View Logs"):
