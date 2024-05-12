@@ -148,6 +148,8 @@ def write_log(question, exec_result, answer, messages, is_refined, refined_gener
         log_string += f"SQL Result: {type(exec_result['data'])}\n"
         log_string += f"SQL Result: {exec_result['data'][0]}\n"
         log_string += f"SQL Result: {type(exec_result['data'][0])}\n"
+        log_string += f"SQL Result: {exec_result['data'][0] == (None,)}\n"
+
     else:
         log_string += f"SQL Error: {exec_result['sqlite_error']}\n"
     log_string += (
@@ -231,8 +233,9 @@ def invoke_chain(question,messages,tokenizer,model,contextRetriever, follow_up=F
         else:
             count = 6
 
-    if 'data' in exec_result and len(exec_result['data']) > 0 and exec_result['data'][0] is not None:
-        answer_prompt = f'''Given the user question, corresponding SQL query, and SQL result, answer the user question.
+    if 'data' in exec_result and len(exec_result['data']) > 0 and exec_result['data'][0] != (None,):
+        if "List" in question:
+            answer_prompt = f'''Given the user question, corresponding SQL query, and SQL result, answer the user question.
 
 Here is a typical example:
 
@@ -247,18 +250,18 @@ Answer: Here's the list 5 cities in country with Italian language
 4. Torino, 903705
 5. Palermo, 683794
 
-Here is another typical example:
-Question: What percentage of population speaks Kannada in the country Bangalore?
-SQL Query: SELECT Percentage FROM countrylanguage WHERE Language = "Kannada" AND CountryCode IN (SELECT CountryCode FROM city WHERE Name = "Bangalore")
-SQL Result:  [(3.9,)]
-Answer: 3.9% of the population speaks Kannada in the country Bangalore.
-
 Here is a new example, please start answering:
 
 Question: {exec_result['question']}
 SQL Query: {exec_result['sql']}
 SQL Result: {exec_result['data']}
 Answer:'''
+        else:
+            answer_prompt = f'''Given the following user question, corresponding SQL query, and SQL result, answer the user question in a sentence.
+ Question: {exec_result['question']}
+ SQL Query: {exec_result['sql']}
+ SQL Result: {exec_result['data']}
+ Answer:'''
         inputs = tokenizer(answer_prompt, return_tensors = "pt").to("cuda")
 
         outputs = model.generate(**inputs, max_new_tokens = 64)
