@@ -4,6 +4,7 @@ from unsloth import FastLanguageModel
 from transformers import LlamaTokenizer, LlamaForCausalLM, AutoTokenizer
 import torch
 from context_retriever import ContextRetriever
+import time
 
 st.title("🦙SQLAssist: NL2SQL Chatbot🤖")
 col1, col2,col3,col4,col5 = st.columns(5)
