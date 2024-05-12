@@ -11,8 +11,6 @@ When you find an answer, verify the answer carefully. Include verifiable evidenc
 - If use `ORDER BY <column> ASC|DESC`, add `GROUP BY <column>` before to select distinct values
 ### Query:
 -- {query}
-### Evidence:
-{evidence}
 ### Database info:
 {desc_str}
 ### old SQL:
