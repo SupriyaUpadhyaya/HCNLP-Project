@@ -34,6 +34,9 @@ You must output the SQL query that answers the question. Do not provide any expl
 ### Context:
 {context}
 
+### Previous Conversation:
+{messages}
+
 """
     return text_to_sql_inference_tmpl_str.format(system_message=system_message, user_message=user_message)
 
