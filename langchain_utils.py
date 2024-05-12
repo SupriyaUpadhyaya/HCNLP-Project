@@ -138,7 +138,7 @@ class Refiner():
         query = response[0]
         return query
 
-def write_log(question, exec_result, answer, messages, is_refined, refined_generations):
+def write_log(question, exec_result, answer, messages, is_refined, refined_generations, answer_prompt):
     log_string = (
         f"```User Question: {question}\n"
         f"Generated SQL Query: {exec_result.get('sql', '')}\n"  # Use get to avoid KeyError if 'sql' is missing
@@ -155,7 +155,8 @@ def write_log(question, exec_result, answer, messages, is_refined, refined_gener
     )
 
     with open("app_logs.log", "a", buffering=1) as logfile:
-        log_string_end = log_string + f"===========================================================\n```"
+        log_string_end = f"{answer_prompt}"
+        log_string_end += log_string + f"===========================================================\n```"
         logfile.write(log_string_end)
 
     return log_string
@@ -229,7 +230,7 @@ def invoke_chain(question,messages,tokenizer,model,contextRetriever, follow_up=F
             count = 6
 
     if 'data' in exec_result and len(exec_result['data']) > 0 :
-        answer_prompt = f'''Given the user question, corresponding SQL query, and SQL result. List the answer if asked or just answer the user question in a sentence.
+        answer_prompt = f'''\### Instruction:\nGiven the user question, corresponding SQL query, and SQL result. List the answer if asked or just answer the user question in a sentence.
 
 Here is a typical example:
 
@@ -252,10 +253,10 @@ Answer: 3.9% of the population speaks Kannada in the country Bangalore.
 
 Here is a new example, please start answering:
 
-Question: {exec_result['question']}
-SQL Query: {exec_result['sql']}
-SQL Result: {exec_result['data']}
-Answer:'''
+### Question: {exec_result['question']}
+### SQL Query: {exec_result['sql']}
+### SQL Result: {exec_result['data']}
+### Answer:'''
         inputs = tokenizer(answer_prompt, return_tensors = "pt").to("cuda")
 
         outputs = model.generate(**inputs, max_new_tokens = 64)
@@ -268,7 +269,7 @@ Answer:'''
     else:
       answer = "Sorry, could not retrive the answer. Please rephrase your question more accurately."
     
-    log_content = write_log(question, exec_result, answer, messages, is_refined, refined_generations)
+    log_content = write_log(question, exec_result, answer, messages, is_refined, refined_generations, answer_prompt)
     st.session_state.current_log = log_content
 
     if 'data' in exec_result and len(exec_result['data']) > 0:
