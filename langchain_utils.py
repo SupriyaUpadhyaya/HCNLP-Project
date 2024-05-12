@@ -144,7 +144,7 @@ def write_log(question, exec_result, answer, messages, is_refined, refined_gener
         f"Generated SQL Query: {exec_result.get('sql', '')}\n"  # Use get to avoid KeyError if 'sql' is missing
     )
     if 'data' in exec_result:
-        log_string += f"SQL Result: {exec_result['data'][0] is None}\n"
+        log_string += f"SQL Result: {exec_result['data']}\n"
     else:
         log_string += f"SQL Error: {exec_result['sqlite_error']}\n"
     log_string += (
