@@ -174,7 +174,6 @@ def invoke_chain(question,messages,tokenizer,model,contextRetriever, follow_up=F
     count = 0
     refiner = Refiner(data_path="/content/drive/MyDrive/HCNLP-Text2Sql-Project/worlddb.db", dataset_name='worlddb', tokenizer=tokenizer, model=model)
     query_generated = query
-    st.session_state.query = query_generated
     exec_result = refiner._execute_sql(sql=query_generated, question=question)
     #print("exec_result : ", exec_result)
     is_refined = False
@@ -242,6 +241,7 @@ Answer:'''
             st.session_state.history.messages.pop()
         st.session_state.history.add_user_message(question)
         st.session_state.history.add_ai_message(exec_result['sql'])
+    st.session_state.query = query_generated
     return answer
 
 
