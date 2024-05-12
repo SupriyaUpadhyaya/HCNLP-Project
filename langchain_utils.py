@@ -144,7 +144,7 @@ def write_log(question, exec_result, answer, messages, is_refined, refined_gener
 
     return log_string
 
-def invoke_chain(question,messages,tokenizer,model,contextRetriever):
+def invoke_chain(question,messages,tokenizer,model,contextRetriever, follow_up=False):
     #print("question : ", question)
     if 'history' not in st.session_state:
         st.session_state.history = ChatMessageHistory()
@@ -164,7 +164,7 @@ def invoke_chain(question,messages,tokenizer,model,contextRetriever):
     query = response[0].split("\n")[0]
     #print("Generated query : ", query)
     count = 0
-    st.session_state.query = query_generated
+    st.session_state.query = query
     refiner = Refiner(data_path="/content/drive/MyDrive/HCNLP-Text2Sql-Project/worlddb.db", dataset_name='worlddb', tokenizer=tokenizer, model=model)
     query_generated = query
     st.session_state.query = query_generated
