@@ -29,9 +29,9 @@ def stream_data():
 
 # Set a default model
 def load_model():
-    tokenizer = AutoTokenizer.from_pretrained("TinyLlama/TinyLlama-1.1B-Chat-v1.0")
+    tokenizer = AutoTokenizer.from_pretrained("basavaraj/text2sql-Llama3-8b")
     model = LlamaForCausalLM.from_pretrained(
-    "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+    "basavaraj/text2sql-Llama3-8b",
     load_in_4bit=True,
     torch_dtype=torch.float16,)
     FastLanguageModel.for_inference(model)
@@ -41,7 +41,7 @@ def load_model():
     st.session_state["contextRetriever"] = contextRetriever
 
 if "model" not in st.session_state:
-    st.session_state["model_name"] = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
+    st.session_state["model_name"] = "basavaraj/text2sql-Llama3-8b"
     load_model()
 
 # Initialize chat history
