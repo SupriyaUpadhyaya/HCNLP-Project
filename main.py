@@ -2,6 +2,7 @@ import streamlit as st
 from langchain_utils import invoke_chain
 from unsloth import FastLanguageModel
 import time
+from langchain.memory import ChatMessageHistory
 
 st.title("🦙SQLAssist: NL2SQL Chatbot🤖")
 col1, col2,col3,col4,col5 = st.columns(5)
@@ -15,6 +16,7 @@ with col2:
     if st.checkbox("Clear All"):
         st.session_state.messages = []
         st.session_state.query = ""
+        st.session_state.history = ChatMessageHistory()
         
 from transformers import LlamaTokenizer, LlamaForCausalLM, AutoTokenizer
 import torch
