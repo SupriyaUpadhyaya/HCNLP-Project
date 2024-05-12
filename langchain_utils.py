@@ -249,7 +249,7 @@ Answer:'''
     log_content = write_log(question, exec_result, answer, messages, is_refined, refined_generations)
     st.session_state.current_log = log_content
 
-    if 'data' in exec_result:
+    if 'data' in exec_result and len(exec_result['data']) > 0:
         if len(st.session_state.history.messages) == 2:
             st.session_state.history.messages.pop()
             st.session_state.history.messages.pop()
