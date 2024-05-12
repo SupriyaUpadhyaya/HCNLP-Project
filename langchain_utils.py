@@ -160,6 +160,31 @@ def write_log(question, exec_result, answer, messages, is_refined, refined_gener
 
     return log_string
 
+def find_previous_lines(text):
+  """
+  Finds all lines before each empty line in a string.
+
+  Args:
+    text: The string to search.
+
+  Returns:
+    A list of strings containing all lines before each empty line.
+  """
+  previous_lines = []
+  current_line = ""
+  for line in text.splitlines():
+    if not line.strip():  # Check for empty line after removing whitespaces
+      if current_line:
+        previous_lines.append(current_line)
+      current_line = ""
+    else:
+      current_line += line + "\n"  # Add newline for proper formatting
+  if current_line:  # Append the last line group if text doesn't end with an empty line
+    previous_lines.append(current_line)
+  return previous_lines
+
+text = "This is some text\n\nAn empty line\nAnother line with text"
+previous_line = find_previous_line(text)
 
 def invoke_chain(question,messages,tokenizer,model,contextRetriever, follow_up=False):
     #print("question : ", question)
@@ -241,7 +266,7 @@ Answer:'''
         response = tokenizer.batch_decode(
             outputs[:, input_length:], skip_special_tokens=True
         )
-        answer = response[0]
+        response = find_previous_lines(response[0])
         print("Answer :", response)
     else:
       answer = "Sorry, could not retrive the answer. Please rephrase your question more accurately."
