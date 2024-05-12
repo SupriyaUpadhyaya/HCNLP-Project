@@ -16,9 +16,8 @@ When you find an answer, verify the answer carefully. Include verifiable evidenc
 
 Here is a typical example:
 
-### Query:
- What is the name and population of the cities with Italian language?
-### Database info:
+Query: What is the name and population of the cities with Italian language?
+Database info:
 
  Table 'city' has columns: ID (INTEGER), Name (CHAR(35)), CountryCode (CHAR(3)), District (CHAR(20)), Population (INTEGER), and foreign keys: ['CountryCode'] -> country.['Code']. The table description is: Stores information about cities. It has attributes like name (Name), country code (CountryCode), district (District), and population (Population). CountryCode is a foreign key referencing the Code field in the country table, indicating the country the city belongs to.
 Here are some relevant example rows (values in the same order as columns above)
@@ -37,26 +36,22 @@ Here are some relevant example rows (values in the same order as columns above)
 ('ITA', 'Italian', 'T', 94.1)
 ('CAN', 'Italian','F', 1.7)
 
-### old SQL:
- SELECT Name, Population FROM city WHERE Language = 'Italian'
-### SQLite error: 
- no such column: Language
-### Exception class:
- <class 'sqlite3.OperationalError'>
-### correct SQL:
-  SELECT Name, Population FROM city WHERE CountryCode = 'ITA'
+old SQL: SELECT Name, Population FROM city WHERE Language = 'Italian'
+SQLite error: no such column: Language
+Exception class: <class 'sqlite3.OperationalError'>
+correct SQL: SELECT Name, Population FROM city WHERE CountryCode = 'ITA'
 
 Now please fixup old SQL and generate new SQL again.
 
-### Query:
+Query:
 -- {query}
-### Database info:
+Database info:
 {desc_str}
-### old SQL:
+old SQL:
 {sql}
-### SQLite error: 
+SQLite error: 
 {sqlite_error}
-### Exception class:
+Exception class:
 {exception_class}
-### correct SQL:
+correct SQL:
 """
