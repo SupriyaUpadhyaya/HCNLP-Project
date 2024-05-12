@@ -2,8 +2,19 @@ import streamlit as st
 from langchain_utils import invoke_chain
 from unsloth import FastLanguageModel
 
-st.title("Langchain NL2SQL Chatbot")
-
+st.title("🦙SQLAssist: NL2SQL Chatbot🤖")
+col1, col2,col3,col4,col5 = st.columns(5)
+st.markdown('#') 
+with col1:
+    if st.checkbox("Follow up"):
+        st.session_state.follow_up = True
+    else:
+        st.session_state.follow_up = False
+with col2:
+    if st.checkbox("Clear All"):
+        st.session_state.messages_1 = []
+        st.session_state.pop("query")
+        
 from transformers import LlamaTokenizer, LlamaForCausalLM, AutoTokenizer
 import torch
 from context_retriever import ContextRetriever
@@ -24,6 +35,11 @@ def load_model():
     st.session_state["model"] = model
     st.session_state["tokenizer"] = tokenizer
     st.session_state["contextRetriever"] = contextRetriever
+
+def stream_data():
+    for word in _LOREM_IPSUM.split(" "):
+        yield word + " "
+        time.sleep(0.15)
 
 if "model" not in st.session_state:
     st.session_state["model_name"] = "basavaraj/text2sql-Llama3-8b"
@@ -52,5 +68,12 @@ if prompt := st.chat_input("What is up?"):
     with st.spinner("Generating response..."):
         with st.chat_message("assistant"):
             response = invoke_chain(prompt, st.session_state.messages, st.session_state.tokenizer, st.session_state.model, st.session_state.contextRetriever)
-            st.markdown(response)
+            _LOREM_IPSUM = response
+            st.write_stream(stream_data)
     st.session_state.messages.append({"role": "assistant", "content": response})
+   
+if "query" in st.session_state:
+    if st.toggle("View Query"):
+        st.info(str(st.session_state.query))
+    if st.toggle("View Logs"):
+        st.info(str(st.session_state.current_log))

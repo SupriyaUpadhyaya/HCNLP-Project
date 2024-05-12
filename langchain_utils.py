@@ -122,6 +122,28 @@ class Refiner():
         query = response[0]
         return query
 
+def write_log(question, exec_result, answer, messages, is_refined, refined_generations):
+    log_string = (
+        f"```User Question: {question}\n"
+        f"Generated SQL Query: {exec_result.get('sql', '')}\n"  # Use get to avoid KeyError if 'sql' is missing
+    )
+    if 'data' in exec_result:
+        log_string += f"SQL Result: {exec_result['data']}\n"
+    else:
+        log_string += f"SQL Error: {exec_result['sqlite_error']}\n"
+    log_string += (
+        f"Answer: {answer}\n"
+        f"Previous conversation : {messages}\n"
+        f"Is refined: {is_refined}\n"
+        f"Refined queries: {refined_generations}\n"
+    )
+
+    with open("app_logs.log", "a", buffering=1) as logfile:
+        log_string_end = log_string + f"===========================================================\n```"
+        logfile.write(log_string_end)
+
+    return log_string
+
 def invoke_chain(question,messages,tokenizer,model,contextRetriever):
     #print("question : ", question)
     if 'history' not in st.session_state:
@@ -144,6 +166,7 @@ def invoke_chain(question,messages,tokenizer,model,contextRetriever):
     count = 0
     refiner = Refiner(data_path="/content/drive/MyDrive/HCNLP-Text2Sql-Project/worlddb.db", dataset_name='worlddb', tokenizer=tokenizer, model=model)
     query_generated = query
+    st.session_state.query = query_generated
     exec_result = refiner._execute_sql(sql=query_generated, question=question)
     #print("exec_result : ", exec_result)
     is_refined = False
@@ -201,22 +224,9 @@ Answer:'''
         print("Answer :", response)
     else:
       answer = "Sorry, could not retrive the answer. Please rephrase your question more accurately."
-    
-    with open("app_logs.log", "a", buffering=1) as logfile:
-            #logfile.write(f"new_context: {new_context}\n")
-            logfile.write(f"text2sql_tmpl_str: {text2sql_tmpl_str}\n")
-            logfile.write(f"User Question: {question}\n")
-            logfile.write(f"Generated SQL Query: {exec_result['sql']}\n")
-            if 'data' in exec_result:
-                logfile.write(f"SQL Result: {exec_result['data']}\n")
-            else:
-                logfile.write(f"sqlite_error: {exec_result['sqlite_error']}\n")
-                logfile.write(f"exception_class: {exec_result['exception_class']}\n")
-            logfile.write(f"Answer: {answer}\n")
-            logfile.write(f"Previous conversation : {prev_hist}\n")
-            logfile.write(f"Is refined: {is_refined}\n")
-            logfile.write(f"Refined queries: {refined_generations}\n")
-            logfile.write(f"===========================================================\n")
+
+    log_content = write_log(question, exec_result, answer, messages, is_refined, refined_generations)  
+    st.session_state.current_log = log_content
 
     if 'data' in exec_result:
         if len(st.session_state.history.messages) == 2:
