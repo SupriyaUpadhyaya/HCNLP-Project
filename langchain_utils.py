@@ -164,7 +164,6 @@ def invoke_chain(question,messages,tokenizer,model,contextRetriever, follow_up=F
     query = response[0].split("\n")[0]
     #print("Generated query : ", query)
     count = 0
-    st.session_state.query = query
     refiner = Refiner(data_path="/content/drive/MyDrive/HCNLP-Text2Sql-Project/worlddb.db", dataset_name='worlddb', tokenizer=tokenizer, model=model)
     query_generated = query
     st.session_state.query = query_generated

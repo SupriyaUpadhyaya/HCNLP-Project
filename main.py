@@ -14,7 +14,7 @@ with col1:
 with col2:
     if st.checkbox("Clear All"):
         st.session_state.messages = []
-        st.session_state.pop("query")
+        st.session_state.query = ""
         
 from transformers import LlamaTokenizer, LlamaForCausalLM, AutoTokenizer
 import torch
@@ -73,7 +73,7 @@ if prompt := st.chat_input("What is up?"):
             st.write_stream(stream_data)
     st.session_state.messages.append({"role": "assistant", "content": response})
    
-if "query" in st.session_state:
+if st.session_state.query:
     if st.toggle("View Query"):
         st.info(str(st.session_state.query))
     if st.toggle("View Logs"):
