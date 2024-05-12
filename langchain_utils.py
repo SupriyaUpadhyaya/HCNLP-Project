@@ -155,7 +155,7 @@ def write_log(question, exec_result, answer, messages, is_refined, refined_gener
     )
 
     with open("app_logs.log", "a", buffering=1) as logfile:
-        log_string_end += log_string + f"===========================================================\n```"
+        log_string_end = log_string + f"===========================================================\n```"
         logfile.write(log_string_end)
 
     return log_string
