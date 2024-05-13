@@ -157,7 +157,7 @@ def invoke_chain(question,messages,tokenizer,model,contextRetriever, follow_up=F
     table_schema_objs = object_retriever.retrieve(question)
     table_names = [obj.table_name for obj in table_schema_objs]
     selected_tables = table_names
-    new_context, selected_tables = contextRetriever.get_table_context_and_rows_str(question)
+    new_context, selected_tables = contextRetriever.get_table_context_and_rows_str(question,st.session_state.topk)
     if follow_up:
         text2sql_tmpl_str = _generate_prompt_sql(
             question, new_context, dialect="sqlite", output="", messages=prev_hist
