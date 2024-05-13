@@ -93,7 +93,7 @@ class ContextRetriever():
             table_node_mapping,
             VectorStoreIndex,
         embed_model=self.embed_model)
-        obj_retriever = obj_index.as_retriever(similarity_top_k=self.topk)
+        obj_retriever = obj_index.as_retriever(similarity_top_k=k)
         return obj_retriever
 
     def get_table_context_and_rows_str(self, query_str: str, k): 
