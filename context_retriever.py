@@ -36,7 +36,7 @@ from llama_index.core.retrievers import SQLRetriever
 from typing import List
 
 class ContextRetriever():
-    def __init__(self, k):
+    def __init__(self):
         self.engine = create_engine("sqlite:////content/drive/MyDrive/HCNLP-Text2Sql-Project/worlddb.db")
 
         self.sql_database = SQLDatabase(self.engine)
@@ -50,7 +50,6 @@ class ContextRetriever():
         self.embed_model = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
 
         self.table_index_dir = "table_index_dir"
-        self.topk = k
         if not Path(self.table_index_dir).exists():
             os.makedirs(self.table_index_dir)
 

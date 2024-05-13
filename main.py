@@ -34,7 +34,7 @@ def load_model():
     load_in_4bit=True,
     torch_dtype=torch.float16,)
     FastLanguageModel.for_inference(model)
-    contextRetriever = ContextRetriever(3)
+    contextRetriever = ContextRetriever()
     st.session_state["model"] = model
     st.session_state["tokenizer"] = tokenizer
     st.session_state["contextRetriever"] = contextRetriever
