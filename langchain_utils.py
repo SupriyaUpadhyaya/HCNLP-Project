@@ -127,7 +127,7 @@ class Refiner():
 
 def write_log(question, selected_tables, exec_result, answer, messages, is_refined, refined_generations):
     log_string = (
-        f"User Question: {question}\n"
+        f"```User Question: {question}\n"
         f"Selected Tables: {selected_tables}\n"
         f"Generated SQL Query: {exec_result.get('sql', '')}\n"  # Use get to avoid KeyError if 'sql' is missing
     )
@@ -139,7 +139,7 @@ def write_log(question, selected_tables, exec_result, answer, messages, is_refin
         f"Answer: {answer}\n"
         f"Previous conversation : {messages}\n"
         f"Is refined: {is_refined}\n"
-        f"Refined queries: {refined_generations}\n"
+        f"Refined queries: {refined_generations}\n```"
     )
 
     with open("app_logs.log", "a", buffering=1) as logfile:
