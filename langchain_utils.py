@@ -198,12 +198,11 @@ def invoke_chain(question,messages,tokenizer,model,contextRetriever, follow_up=F
 
     if 'data' in exec_result and len(exec_result['data']) > 0 and exec_result['data'][0] != (None,):
         if "List" in question:
-            answer_prompt = f'''Given the user question, corresponding SQL query, and SQL result, answer the user question.
+            answer_prompt = f'''Given the user question and SQL result, answer the user question.
 
 Here is a typical example:
 
 Question: List name and population of the 5 cities in country with Italian language?
-SQL Query: SELECT Name, Population FROM city WHERE CountryCode IN (SELECT Code FROM country WHERE Name = 'Italy') ORDER BY Population DESC LIMIT 5
 SQL Result: [('Roma', 2643581), ('Milano', 1300977), ('Napoli', 1002619), ('Torino', 903705), ('Palermo', 683794)]
 Answer: Here's the list of 5 cities in country with Italian language
 1. Roma, 2643581
@@ -215,7 +214,6 @@ Answer: Here's the list of 5 cities in country with Italian language
 Here is a new example, please start answering:
 
 Question: {exec_result['question']}
-SQL Query: {exec_result['sql']}
 SQL Result: {exec_result['data']}
 Answer:'''
         else:
