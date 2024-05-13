@@ -14,6 +14,7 @@ from sqlalchemy import (
     Integer,
 )
 import re
+import streamlit as st
 
 from langchain.embeddings.huggingface import HuggingFaceEmbeddings
 from llama_index.core  import ServiceContext
@@ -97,12 +98,14 @@ class ContextRetriever():
         return obj_retriever
 
     def get_table_context_and_rows_str(self,
-        query_str: str
-    ):
+        query_str: str 
+    ): 
         """Get table context string."""
-        context_strs = []
+        context_strs = [] 
         object_retriever = self.get_object_retriever()
         table_schema_objs = object_retriever.retrieve(query_str)
+        table_names = [obj.table_name for obj in table_schema_objs]
+        print("namessssssssss: ", table_names)
         for table_schema_obj in table_schema_objs:
             # first append table info + additional context
             table_info = self.sql_database.get_single_table_info(
@@ -125,4 +128,5 @@ class ContextRetriever():
                 table_info += table_row_context
 
             context_strs.append(table_info)
-        return "\n\n".join(context_strs), table_schema_objs
+        context_strs.append(str(table_names))
+        return  "\n\n".join(context_strs)
