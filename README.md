@@ -6,20 +6,18 @@ Natural Language SQL Translator with following features and capabilities:
 - Refines SQL execution errors
 - Rephrases answers for enhanced clarity
 
-![Alt text](report/hcnlp.png)
+![Architecture of SQLAssist for text-to-sql to natural language conversion](report/hcnlp.png)
 
 Full report and presentation is available at [report](report)
 ##
-|Otto-von-Guericke-Universität Magdeburg, Germany|
-| -------- |
-
+### Otto-von-Guericke-Universität Magdeburg, Germany
 |Team members|
 | -------- |
-|BASAVARAJ HIREMATH|
-|DHANASHREE GUNDA|
-|MALLIKA MANAM|
-|NIHARIKA RAMANATH|
-|SUPRIYA P UPADHYAYA|
+|Basasvaraj Hiremath|
+|Dhanashree Gunda|
+|Mallika Manam|
+|Niharika Ramanath|
+|Supriya P Upadhyaya|
 
 |Supervisors|
 | -------- |
@@ -40,5 +38,7 @@ For inference use [inference notebook](SupriyaUpadhyaya/HCNLP-Text2Sql-Project/N
 ##
 ### SQLAssist application
 Start the SQLAssist application on Google Colab using [App notebook](SupriyaUpadhyaya/HCNLP-Text2Sql-Project/NL2SQL_App.ipynb)
+
+![inference via streamlit app](report/app.png)
 
 
