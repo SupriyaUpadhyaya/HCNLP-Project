@@ -1,4 +1,4 @@
-# SQLAssist: A RAG unified framework for Natural Langauge to SQL translation
+# SQLAssist: A RAG unified framework for Natural Language to SQL translation
 Natural Language SQL Translator with following features and capabilities:
 
 - Includes query-relevant context in instruction prompt
